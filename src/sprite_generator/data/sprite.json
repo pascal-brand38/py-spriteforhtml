@@ -5,10 +5,12 @@
     ".icon-facebook":     { "filename": "facebook.png",    "posHor": 0  , "posVer": 0  },
     ".myyoutube":         { "filename": "youtube.png",     "posHor": 32 , "posVer": 0  }, 
     "#english-id":        { "filename": "english.png",     "posHor": 0  , "posVer": 32 }, 
-    ".france-flag":       { "filename": "france.png",      "posHor": 32 , "posVer": 32 },
-    ".small-play-after":  { "filename": "play_20x20.png",  "posHor": 0  , "posVer": 64, "spanPosition": "after"  }
+    ".france-flag":       { "filename": "france.png",      "posHor": 32 , "posVer": 32, "pseudo": "::before" },
+    ".small-play-after":  { "filename": "play_20x20.png",  "posHor": 0  , "posVer": 64, "pseudo": "::after"  }
   },
   "cssAdds": [
+    "content: \"\"",
+    "display: block;",
     "background-image:url(sprite.png)"
   ]
 }

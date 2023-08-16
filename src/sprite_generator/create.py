@@ -56,9 +56,9 @@ def create_sprites(spriteJsonFilename):
     pos_h = int(desc['posVer'])
 
     sprite.paste(i, (pos_w, pos_h))
-    spanPosition = desc.get('spanPosition', 'before')
+    pseudo = desc.get('pseudo', '')
 
-    cssString += iconKey + '::' + spanPosition + ' {'                                                \
+    cssString += iconKey + pseudo + ' {'                                                \
       + ' background-position: -' + str(desc['posHor']) + 'px -' + str(desc['posVer']) + 'px;'       \
       + ' width: ' + str(i.width) + 'px;'                                                            \
       + ' height: ' + str(i.height) + 'px;'                                                          \
@@ -66,7 +66,7 @@ def create_sprites(spriteJsonFilename):
     
     if cssAllClasses != '':
       cssAllClasses += ',\n'
-    cssAllClasses += iconKey + '::' + spanPosition
+    cssAllClasses += iconKey + '::' + pseudo
 
     index = index + 1
   
