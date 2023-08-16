@@ -1,5 +1,6 @@
 {
   "spriteOutputBaseName": "/tmp/sprite",
+  "cssOutputFilename": "/tmp/icons.css",
   "icons": {
     ".icon-facebook":     { "filename": "facebook.png",    "posHor": 0  , "posVer": 0  },
     ".myyoutube":         { "filename": "youtube.png",     "posHor": 32 , "posVer": 0  }, 

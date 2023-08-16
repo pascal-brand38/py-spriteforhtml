@@ -10,6 +10,7 @@ import json
 
 # TODO: check the sprite does not overlap in some icons
 # TODO: save .css file instead of prints in the console
+# TODO: in css, include background image and other on request
 
 def create_sprites(spriteJsonFilename):
   try:
@@ -17,7 +18,9 @@ def create_sprites(spriteJsonFilename):
       json_db = json.load(file)
   except Exception as err:
     print(err)
-    raise Exception('Error in sprite-generator.create.create_sprites')
+    raise Exception('Error in sprite-generator.create.create_sprites when opening ', spriteJsonFilename)
+  
+  cssString = '/* Generated using python package sprite_generator */'
 
   rootDirIcons = os.path.dirname(spriteJsonFilename)
   iconsKeys = json_db['icons'].keys()
@@ -28,9 +31,7 @@ def create_sprites(spriteJsonFilename):
 
   for iconKey in iconsKeys:
     desc = json_db['icons'][iconKey]
-    name = desc['filename']
-    if (not os.path.isabs(name)):
-      name = rootDirIcons + '/' + name
+    name = getFullFilename(desc['filename'], rootDirIcons)
 
     pos_w = int(desc['posHor'])
     pos_h = int(desc['posVer'])
@@ -57,23 +58,21 @@ def create_sprites(spriteJsonFilename):
 
     sprite.paste(i, (pos_w, pos_h))
     spanPosition = desc.get('spanPosition', 'before')
-    print(iconKey + '::' + spanPosition + ' {'
-      + ' background-position: -' + str(desc['posHor']) + 'px -' + str(desc['posVer']) + 'px;'
-      + ' width: ' + str(i.width) + 'px;'
-      + ' height: ' + str(i.height) + 'px;'
-      + ' }')
+    cssString = cssString + '\n' + iconKey + '::' + spanPosition + ' {'                              \
+      + ' background-position: -' + str(desc['posHor']) + 'px -' + str(desc['posVer']) + 'px;'       \
+      + ' width: ' + str(i.width) + 'px;'                                                            \
+      + ' height: ' + str(i.height) + 'px;'                                                          \
+      + ' }'
     index = index + 1
   
-  spriteOutputBaseName = json_db['spriteOutputBaseName']
-  if (not os.path.isabs(spriteOutputBaseName)):
-    spriteOutputBaseName = rootDirIcons + '/' + spriteOutputBaseName
-
+  spriteOutputBaseName = getFullFilename(json_db['spriteOutputBaseName'], rootDirIcons)
   png_result = spriteOutputBaseName + '.png'
   print('Save ' +  png_result)
   sprite.save(png_result, optimize=True)
   error = os.system('optipng ' + png_result)
   if error != 0:
-    exit(1)
+    raise Exception('Error in sprite-generator.create.create_sprites related to optipng')
+
 
   # save as webp
   # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#webp
@@ -82,4 +81,25 @@ def create_sprites(spriteJsonFilename):
   print('Save ' +  webp_result)
   sprite.save(webp_result, method=6, quality=100, lossless=True)
 
-  return 0    # no error
+  # save css file, or print on the console
+  cssFilename = json_db.get('cssOutputFilename')
+  if cssFilename is None:
+    print('\n=======================  copy/paste the sprite position in your favorite css file')
+    print(cssString)
+    print('=======================')
+  else:
+    cssFilename = getFullFilename(cssFilename, rootDirIcons)
+    with open(cssFilename, 'w') as file:
+      file.write(cssString)
+      file.close()
+    print('Save ' +  cssFilename)
+
+
+
+# utility function to get the full filename given a filename (absolute or relative) and the
+# root directory of the sprite json description file
+def getFullFilename(filename, root):
+  if (os.path.isabs(filename)):
+    return filename
+  else:
+    return root + '/' + filename
