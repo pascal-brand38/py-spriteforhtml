@@ -9,8 +9,6 @@ import json
 
 
 # TODO: check the sprite does not overlap in some icons
-# TODO: save .css file instead of prints in the console
-# TODO: in css, include background image and other on request
 
 def create_sprites(spriteJsonFilename):
   try:
@@ -20,7 +18,8 @@ def create_sprites(spriteJsonFilename):
     print(err)
     raise Exception('Error in sprite-generator.create.create_sprites when opening ', spriteJsonFilename)
   
-  cssString = '/* Generated using python package sprite_generator */'
+  cssString = '/* Generated using python package sprite_generator */\n\n'
+  cssAllClasses = ''
 
   rootDirIcons = os.path.dirname(spriteJsonFilename)
   iconsKeys = json_db['icons'].keys()
@@ -58,13 +57,27 @@ def create_sprites(spriteJsonFilename):
 
     sprite.paste(i, (pos_w, pos_h))
     spanPosition = desc.get('spanPosition', 'before')
-    cssString = cssString + '\n' + iconKey + '::' + spanPosition + ' {'                              \
+
+    cssString += iconKey + '::' + spanPosition + ' {'                                                \
       + ' background-position: -' + str(desc['posHor']) + 'px -' + str(desc['posVer']) + 'px;'       \
       + ' width: ' + str(i.width) + 'px;'                                                            \
       + ' height: ' + str(i.height) + 'px;'                                                          \
-      + ' }'
+      + ' }\n'
+    
+    if cssAllClasses != '':
+      cssAllClasses += ',\n'
+    cssAllClasses += iconKey + '::' + spanPosition
+
     index = index + 1
   
+  cssAdds = json_db.get('cssAdds')
+  if cssAdds is not None:
+    cssAllClasses += '{\n'
+    for s in cssAdds:
+      cssAllClasses += '  ' + s + ';\n'
+    cssAllClasses += '}\n'
+    cssString += '\n' + cssAllClasses
+
   spriteOutputBaseName = getFullFilename(json_db['spriteOutputBaseName'], rootDirIcons)
   png_result = spriteOutputBaseName + '.png'
   print('Save ' +  png_result)
