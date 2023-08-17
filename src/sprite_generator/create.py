@@ -6,6 +6,7 @@ from PIL import Image
 
 import os
 import json
+import shutil
 
 
 # TODO: check the sprite does not overlap in some icons
@@ -82,9 +83,13 @@ def create_sprites(spriteJsonFilename):
   png_result = spriteOutputBaseName + '.png'
   print('Save ' +  png_result)
   sprite.save(png_result, optimize=True)
-  error = os.system('optipng ' + png_result)
-  if error != 0:
-    raise Exception('Error in sprite-generator.create.create_sprites related to optipng')
+  cmd = 'optipng ' + png_result
+  if (shutil.which(cmd) is not None):
+    error = os.system('optipng ' + png_result)
+    if error != 0:
+      raise Exception('Error in sprite-generator.create.create_sprites related to optipng')
+  else:
+    print('Install optipng to get benefits of an even better optimization of .png file')
 
 
   # save as webp
