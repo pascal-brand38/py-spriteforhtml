@@ -1,18 +1,54 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Sprite Generator Python Package Demo</title>
 
-        <link href="/tmp/sprite.css" rel="stylesheet" media="all">
-    </head>
-    <body>
-        <h1>Sprite Generator Python Package Demo</h1>
-        
-        <p>
-          <span class="icon-facebook"> </span>
-        </p>
-        <p>It contains a 
-             <strong>main heading</strong> and <em> paragraph </em>.
-        </p>
-    </body>
+<head>
+  <title>SpriteForHtml Python Package Demo</title>
+
+  <link href="sprite.css" rel="stylesheet" media="all">
+  <style>
+    p { vertical-align: middle; }
+  </style>
+</head>
+
+<body>
+  <h1>SpriteForHtml Python Package Demo</h1>
+
+  <p>
+    Here is the generated sprite using the command <code> python -m spriteforhtml </code>.
+    This command will generate
+    <ul>
+      <li> sprite.png and sprite.web, the sprite image </li>
+      <li> sprite.css, which describes the position and size of each sub-image in the sprite</li>
+    </ul>
+  </p>
+  <img src="sprite.png" />
+
+  <p>
+    This sprite has been build with default json file sprite.json, and is
+  </p>
+
+  <p>
+    <span class="icon-facebook">  </span> Facebook, as a regular class
+  </p>
+  <p>
+    <span class="myyoutube">  </span> Youtube, with hover pseudo
+  </p>
+  <p>
+    <span id="english-id">  </span> English flag, as a css id
+  </p>
+  <p>
+    <span class="france-flag"> French flag, with pseudo being before
+  </p>
+  <p>
+    <span class="small-play-after"> play button, smaller one, with pseudo being after
+  </p>
+
+  <br>
+
+  <p>
+    You may note, using your favorite html debugger, that all icons (facebook, youtube,...)
+    are loaded from sprite.png using a single request, instead of 5 requests if using img
+  </p>
+</body>
+
 </html>
