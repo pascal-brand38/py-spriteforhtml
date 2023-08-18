@@ -18,9 +18,9 @@ def create_sprites(spriteJsonFilename):
       json_db = json.load(file)
   except Exception as err:
     print(err)
-    raise Exception('Error in sprite-generator.create.create_sprites when opening ', spriteJsonFilename)
+    raise Exception('Error in spriteforhtml.create.create_sprites when opening ', spriteJsonFilename)
   
-  cssString = '/* Generated using python package sprite_generator */\n\n'
+  cssString = '/* Generated using python package spriteforhtml */\n\n'
   cssAllClasses = ''
 
   rootDirIcons = os.path.dirname(spriteJsonFilename)
@@ -92,7 +92,7 @@ def create_sprites(spriteJsonFilename):
   if (shutil.which('optipng') is not None):
     error = os.system('optipng ' + png_result)
     if error != 0:
-      raise Exception('Error in sprite-generator.create.create_sprites related to optipng')
+      raise Exception('Error in spriteforhtml.create.create_sprites related to optipng')
   else:
     print('Install optipng to get benefits of an even better optimization of .png file')
 

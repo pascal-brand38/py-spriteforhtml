@@ -1,7 +1,7 @@
 # __main__.py
 
 import sys, os
-from sprite_generator import create
+from spriteforhtml import create
 
 def main():
   argv = sys.argv

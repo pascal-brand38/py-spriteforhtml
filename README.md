@@ -1,1 +1,1 @@
-# py-sprite-generator
+# py-spriteforhtml
