@@ -1,6 +1,6 @@
 # Introduction
 
-**spriteforhtml** is a python package aimed at building a sprite from small image.
+**spriteforhtml** is a python package aimed at building a sprite from small images.
 The sprite is created as a png and a webp image.
 
 Typically, from single small images
@@ -19,25 +19,25 @@ spriteforhtml will create the following bigger image (the sprite), that contains
 as well as a .css file, that used by the html to display a small image from the sprite. Typically, it includes:
 
 ```
-#english-id {
-  background-position: -0px -32px;
-  width: 32px;
-  height: 32px;
-}
-#english-id {
-  content: "";
-  display: inline-block;
-  vertical-align: middle;
-  background-image:url(sprite.png);
-}
+  #english-id {
+    background-position: -0px -32px;
+    width: 32px;
+    height: 32px;
+  }
+  #english-id {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    background-image:url(sprite.png);
+  }
 ```
 
 It is then rather easy to display the english flag in html, using for example:
 ```
-<p>
-  <span id="english-id">  </span>
-  English flag, as a css id
-</p>
+  <p>
+    <span id="english-id">  </span>
+    English flag, as a css id
+  </p>
 
 ```
 
@@ -87,6 +87,91 @@ In this demo, the outputs are created in the tmp rootdir (as specified in sprite
 
 
 
-## Making your sprite
+## Generating my sprite
 
-You have to write a json file with the same structure than [the one of the demo](https://github.com/pascal-brand38/py-spriteforhtml/tree/main/src/spriteforhtml/data/sprite.json). 
+### Command and API
+There are 2 ways to generate a sprite and css file:
+* Using the command line:
+  ```python -m spriteforhtml <mysprite.json>```
+* Using the API in your favorite python source, with the following:
+```
+  from spriteforhtml.create import create_sprites
+  create_sprites('<mysprite.json>')
+```
+
+### <mysprite.json>
+This file is a json file format that includes all the information
+used to create the sprite: small images name, position in sprite,
+css class to generate, filenames of the resulting sprite, filename
+of the runsulting css file,...
+
+Do not hesitate to check 
+[the one of the demo](https://github.com/pascal-brand38/py-spriteforhtml/tree/main/src/spriteforhtml/data/sprite.json).
+
+<br />
+Note that in the following, when a path or a filename is considered, there are 2 different cases to take care:
+
+* an absolute path
+* a relative path: it is then relative to the
+  location of ```<mysprite.json>```
+
+<br />
+The properties of the json are:
+
+#### ```"subimages"```
+A list of objects describing all the sub images to be used in the sprite.
+Each sub image is made of a json object containing the following properties:
+* ```"filename"```: the name of the subimage
+* ```"posHor"```: its horizontal position in the sprite
+* ```"posVer"```: its vertical position in the sprite
+* ```"cssSelector"```: the css selector to use it in html.  It can be a class
+  (starting with a .), an id (starting with a #),...
+* ```"cssPseudo"```: It is optional. If present, this is the
+  [pseudo-class](https://developer.mozilla.org/fr/docs/Web/CSS/Pseudo-classes)
+  added at the end of the ```cssSelector```
+
+
+#### ```"spriteFilename"``` 
+A string of the name of the resulting sprite, without the image extension.
+2 versions is be created: a ```.png```, and a ```.webp```.
+
+### ```"cssCommon"```
+A list of 
+[css rules](https://developer.mozilla.org/fr/docs/Learn/Getting_started_with_the_web/CSS_basics) ```"property: value;"``` 
+common to
+all the designated selectors for the sprite.
+Typically, we could have ```"display: inline-block;```.
+
+Here, this is **important** to add the background-image
+property, with the correct path of the sprite image. As an example, it could be
+```
+  "background-image:url(sprite.png)"
+```
+
+
+#### ```cssFilename```
+This is an optional property.
+If present, a css file containing the selectors
+is created. This css file can then be used by your html.
+
+If not present, the generated css content is displayed on
+the console.
+
+
+### Use the result
+To basically use the generated files, you must add in the
+head section of the html a link to the created .css file,
+for example
+```
+  <link href="sprite.css" rel="stylesheet" media="all">
+```
+
+and use the icons in the body. This usage depends on the
+way the selectors are defined in your sprite.json, 
+but it can be typically
+```
+  <span class="icon-facebook">  </span>
+```
+
+You may refer to the 
+[example page](https://github.com/pascal-brand38/py-spriteforhtml/tree/main/src/spriteforhtml/data/page.html).
