@@ -1,17 +1,18 @@
 {
-  "spriteOutputBaseName": "/tmp/sprite",
-  "cssOutputFilename": "/tmp/sprite.css",
-  "icons": {
-    ".icon-facebook":     { "filename": "facebook.png",    "posHor": 0  , "posVer": 0  },
-    ".myyoutube":         { "filename": "youtube.png",     "posHor": 32 , "posVer": 0, "pseudo": ":not(:hover)"  }, 
-    "#english-id":        { "filename": "english.png",     "posHor": 0  , "posVer": 32 }, 
-    ".france-flag":       { "filename": "france.png",      "posHor": 32 , "posVer": 32, "pseudo": "::before" },
-    ".small-play-after":  { "filename": "play_20x20.png",  "posHor": 0  , "posVer": 64, "pseudo": "::after"  }
-  },
-  "cssAdds": [
+  "subimages": [
+    { "filename": "facebook.png",    "posHor": 0  , "posVer": 0,  "cssSelector": ".icon-facebook" },
+    { "filename": "youtube.png",     "posHor": 32 , "posVer": 0,  "cssSelector": ".myyoutube",         "cssPseudo": ":not(:hover)"  }, 
+    { "filename": "english.png",     "posHor": 0  , "posVer": 32, "cssSelector": "#english-id" }, 
+    { "filename": "france.png",      "posHor": 32 , "posVer": 32, "cssSelector": ".france-flag",       "cssPseudo": "::before" },
+    { "filename": "play_20x20.png",  "posHor": 0  , "posVer": 64, "cssSelector": ".small-play-after",  "cssPseudo": "::after"  }
+  ],
+  "spriteFilename": "/tmp/sprite",
+
+  "cssCommon": [
     "content: \"\"",
     "display: inline-block",
     "vertical-align: middle",
     "background-image:url(sprite.png)"
-  ]
+  ],
+  "cssFilename": "/tmp/sprite.css"
 }
