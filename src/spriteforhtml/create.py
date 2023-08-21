@@ -12,7 +12,7 @@ import shutil
 # TODO: check the sprite does not overlap in some icons
 # TODO: auto-position the sprite
 
-def error(e):
+def _error(e):
   raise Exception(e)
 
 
@@ -21,19 +21,16 @@ def error(e):
 def checkJson(json_db):
   subimages = json_db.get('subimages')
   if subimages is None:
-    e = 'Error in spriteforhtml.create.create_sprites: property "subimages" is missing'
-    raise Exception(e)
+    _error('Error in spriteforhtml.create.create_sprites: property "subimages" is missing')
 
   requiredKeys = [ 'filename', 'posHor', 'posVer', 'cssSelector']
   for subimage in subimages:
     for key in requiredKeys:
       if subimage.get(key) is None:
-        e = 'Error in spriteforhtml.create.create_sprites: in "subimages", property ' + key + ' is required'
-        raise Exception(e)
+        _error('Error in spriteforhtml.create.create_sprites: in "subimages", property ' + key + ' is required')
 
   if json_db.get('spriteFilename') is None:
-    e = 'Error in spriteforhtml.create.create_sprites: property "spriteFilename" is missing'
-    raise Exception(e)
+    _error('Error in spriteforhtml.create.create_sprites: property "spriteFilename" is missing')
 
 
 
@@ -44,7 +41,7 @@ def create_sprites(spriteJsonFilename):
       json_db = json.load(file)
   except Exception as err:
     print(err)
-    raise Exception('Error in spriteforhtml.create.create_sprites when opening ', spriteJsonFilename)
+    _error('Error in spriteforhtml.create.create_sprites when opening ' + spriteJsonFilename)
   
   checkJson(json_db)
 
@@ -59,7 +56,7 @@ def create_sprites(spriteJsonFilename):
   images = []
 
   for subimage in subimages:
-    name = getFullFilename(subimage['filename'], rootDirIcons)
+    name = _getFullFilename(subimage['filename'], rootDirIcons)
 
     pos_w = int(subimage['posHor'])
     pos_h = int(subimage['posVer'])
@@ -104,14 +101,14 @@ def create_sprites(spriteJsonFilename):
     cssAllClasses += '}\n'
     cssString += '\n' + cssAllClasses
 
-  spriteFilename = getFullFilename(json_db['spriteFilename'], rootDirIcons)
+  spriteFilename = _getFullFilename(json_db['spriteFilename'], rootDirIcons)
   png_result = spriteFilename + '.png'
   print('Save ' +  png_result)
   sprite.save(png_result, optimize=True)
   if (shutil.which('optipng') is not None):
     error = os.system('optipng ' + png_result)
     if error != 0:
-      raise Exception('Error in spriteforhtml.create.create_sprites related to optipng')
+      _error('Error in spriteforhtml.create.create_sprites related to optipng')
   else:
     print('Install optipng to get benefits of an even better optimization of .png file')
 
@@ -130,7 +127,7 @@ def create_sprites(spriteJsonFilename):
     print(cssString)
     print('=======================')
   else:
-    cssFilename = getFullFilename(cssFilename, rootDirIcons)
+    cssFilename = _getFullFilename(cssFilename, rootDirIcons)
     with open(cssFilename, 'w') as file:
       file.write(cssString)
       file.close()
@@ -140,7 +137,7 @@ def create_sprites(spriteJsonFilename):
 
 # utility function to get the full filename given a filename (absolute or relative) and the
 # root directory of the sprite json desription file
-def getFullFilename(filename, root):
+def _getFullFilename(filename, root):
   if (os.path.isabs(filename)):
     return filename
   else:
