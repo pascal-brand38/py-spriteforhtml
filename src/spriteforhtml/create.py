@@ -41,12 +41,48 @@ def _checkJson(json_db):
   if json_db.get('spriteFilename') is None:
     _error('Error in spriteforhtml.create.create_sprites: property "spriteFilename" is missing')
 
-
+# Open sub images, and add them in the json_db to further usage
 def _openSubimages(json_db, rootDir):
   for subimage in json_db['subimages']:
     name = _getFullFilename(subimage['filename'], rootDir)
     i = Image.open(name)
     subimage['pil'] = i
+
+# check for subimage overlapping
+def _getCoords(i):
+  ax = i['posHor']
+  bx = ax + i['pil'].width - 1
+  ay = i['posVer']
+  by = ay + i['pil'].height - 1
+  return ax, bx, ay, by
+
+def _isOutside(a1, b1, a2, b2):
+  if (a2<a1) and (b2<a1):
+    return True
+  if (a2>b1) and (b2>b1):
+    return True
+  return False
+  
+def _checkUnitOverlapping(i1, i2):
+  ax1, bx1, ay1, by1 = _getCoords(i1)
+  ax2, bx2, ay2, by2 = _getCoords(i2)
+  if (_isOutside(ax1, bx1, ax2, bx2)):
+    return False
+  if (_isOutside(ay1, by1, ay2, by2)):
+    return False
+  
+  print(ax1, ay1, bx1, by1)
+  print(ax2, ay2, bx2, by2)
+  return True
+
+def _checkOverlapping(subimages):
+  for i1 in subimages:
+    for i2 in subimages:
+      if (i1 == i2):
+        # do not check the same image
+        continue
+      if _checkUnitOverlapping(i1, i2):
+        _error('Subimages ' + i1['filename'] + ' and ' + i2['filename'] + ' overlap')
 
 def create_sprites(spriteJsonFilename):
   try:
@@ -59,6 +95,7 @@ def create_sprites(spriteJsonFilename):
   rootDir = os.path.dirname(spriteJsonFilename)
   _checkJson(json_db)
   _openSubimages(json_db, rootDir)
+  _checkOverlapping(json_db['subimages'])
 
   cssString = '/* Generated using python package spriteforhtml */\n\n'
   cssAllClasses = ''
