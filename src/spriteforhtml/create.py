@@ -16,9 +16,18 @@ def _error(e):
   raise Exception(e)
 
 
+# utility function to get the full filename given a filename (absolute or relative) and the
+# root directory of the sprite json desription file
+def _getFullFilename(filename, root):
+  if (os.path.isabs(filename)):
+    return filename
+  else:
+    return root + '/' + filename
+
+
 # checkJson
 # check json structure, that is all the arguments that are mandatory
-def checkJson(json_db):
+def _checkJson(json_db):
   subimages = json_db.get('subimages')
   if subimages is None:
     _error('Error in spriteforhtml.create.create_sprites: property "subimages" is missing')
@@ -33,7 +42,11 @@ def checkJson(json_db):
     _error('Error in spriteforhtml.create.create_sprites: property "spriteFilename" is missing')
 
 
-
+def _openSubimages(json_db, rootDir):
+  for subimage in json_db['subimages']:
+    name = _getFullFilename(subimage['filename'], rootDir)
+    i = Image.open(name)
+    subimage['pil'] = i
 
 def create_sprites(spriteJsonFilename):
   try:
@@ -42,39 +55,34 @@ def create_sprites(spriteJsonFilename):
   except Exception as err:
     print(err)
     _error('Error in spriteforhtml.create.create_sprites when opening ' + spriteJsonFilename)
-  
-  checkJson(json_db)
+
+  rootDir = os.path.dirname(spriteJsonFilename)
+  _checkJson(json_db)
+  _openSubimages(json_db, rootDir)
 
   cssString = '/* Generated using python package spriteforhtml */\n\n'
   cssAllClasses = ''
 
-  rootDirIcons = os.path.dirname(spriteJsonFilename)
-  subimages = json_db['subimages']
-
   sprite_width = 0
   sprite_height = 0
-  images = []
 
-  for subimage in subimages:
-    name = _getFullFilename(subimage['filename'], rootDirIcons)
-
+  for subimage in json_db['subimages']:
     pos_w = int(subimage['posHor'])
     pos_h = int(subimage['posVer'])
-    i = Image.open(name)
-    if sprite_width < pos_w + i.width:
-      sprite_width = pos_w + i.width
-    if sprite_height < pos_h + i.height:
-      sprite_height = pos_h + i.height
-    images.append(i)
+    w = subimage['pil'].width
+    h = subimage['pil'].height
+    if sprite_width < pos_w + w:
+      sprite_width = pos_w + w
+    if sprite_height < pos_h + h:
+      sprite_height = pos_h + h
 
   sprite = Image.new(
     mode='RGBA',
     size=(sprite_width, sprite_height),
     color=(0,0,0,0))  # fully transparent
 
-  index = 0
-  for subimage in subimages:
-    i = images[index]
+  for subimage in json_db['subimages']:
+    i = subimage['pil']
     pos_w = int(subimage['posHor'])
     pos_h = int(subimage['posVer'])
 
@@ -90,8 +98,6 @@ def create_sprites(spriteJsonFilename):
     if cssAllClasses != '':
       cssAllClasses += ',\n'
     cssAllClasses += subimage['cssSelector'] + pseudo
-
-    index = index + 1
   
   cssCommon = json_db.get('cssCommon')
   if cssCommon is not None:
@@ -101,7 +107,7 @@ def create_sprites(spriteJsonFilename):
     cssAllClasses += '}\n'
     cssString += '\n' + cssAllClasses
 
-  spriteFilename = _getFullFilename(json_db['spriteFilename'], rootDirIcons)
+  spriteFilename = _getFullFilename(json_db['spriteFilename'], rootDir)
   png_result = spriteFilename + '.png'
   print('Save ' +  png_result)
   sprite.save(png_result, optimize=True)
@@ -127,18 +133,9 @@ def create_sprites(spriteJsonFilename):
     print(cssString)
     print('=======================')
   else:
-    cssFilename = _getFullFilename(cssFilename, rootDirIcons)
+    cssFilename = _getFullFilename(cssFilename, rootDir)
     with open(cssFilename, 'w') as file:
       file.write(cssString)
       file.close()
     print('Save ' +  cssFilename)
 
-
-
-# utility function to get the full filename given a filename (absolute or relative) and the
-# root directory of the sprite json desription file
-def _getFullFilename(filename, root):
-  if (os.path.isabs(filename)):
-    return filename
-  else:
-    return root + '/' + filename
