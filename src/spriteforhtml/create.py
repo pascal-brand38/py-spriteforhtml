@@ -7,11 +7,36 @@ from PIL import Image
 import os
 import json
 import shutil
-#import math
 
 
 # TODO: check the sprite does not overlap in some icons
 # TODO: auto-position the sprite
+
+def error(e):
+  raise Exception(e)
+
+
+# checkJson
+# check json structure, that is all the arguments that are mandatory
+def checkJson(json_db):
+  subimages = json_db.get('subimages')
+  if subimages is None:
+    e = 'Error in spriteforhtml.create.create_sprites: property "subimages" is missing'
+    raise Exception(e)
+
+  requiredKeys = [ 'filename', 'posHor', 'posVer', 'cssSelector']
+  for subimage in subimages:
+    for key in requiredKeys:
+      if subimage.get(key) is None:
+        e = 'Error in spriteforhtml.create.create_sprites: in "subimages", property ' + key + ' is required'
+        raise Exception(e)
+
+  if json_db.get('spriteFilename') is None:
+    e = 'Error in spriteforhtml.create.create_sprites: property "spriteFilename" is missing'
+    raise Exception(e)
+
+
+
 
 def create_sprites(spriteJsonFilename):
   try:
@@ -21,6 +46,8 @@ def create_sprites(spriteJsonFilename):
     print(err)
     raise Exception('Error in spriteforhtml.create.create_sprites when opening ', spriteJsonFilename)
   
+  checkJson(json_db)
+
   cssString = '/* Generated using python package spriteforhtml */\n\n'
   cssAllClasses = ''
 
