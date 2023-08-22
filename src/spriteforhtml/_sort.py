@@ -16,12 +16,12 @@ import functools
 def _compare(i1, i2):
   if i1.get('posHor') is not None:
     if i2.get('posHor') is not None:
-      return 0    # i1 and i2 can be interchanged
+      return 0, None, None, None, None    # i1 and i2 can be interchanged
     else:
-      return -1   # i1 is before i2
+      return -1, None, None, None, None   # i1 is before i2
 
   if i2.get('posHor') is not None:
-    return +1   # i2 is before i1
+    return +1, None, None, None, None   # i2 is before i1
 
   w1, h1 = i1['pil'].size
   w2, h2 = i2['pil'].size

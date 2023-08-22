@@ -3,11 +3,10 @@
 # Copyright (c) 2023 Pascal Brand
 
 from PIL import Image
-from ._sort import sortSubimages
+import os, json, shutil, math
+from pathlib import Path
 
-import os
-import json
-import shutil
+from ._sort import sortSubimages
 
 # TODO: automatic css named class, with or without prefix
 # TODO: through command-line only, without json
@@ -32,7 +31,7 @@ def _checkJson(json_db):
   if subimages is None:
     _error('Error in spriteforhtml.create.create_sprites: property "subimages" is missing')
 
-  requiredKeys = [ 'filename', 'cssSelector']
+  requiredKeys = [ 'filename']
   for subimage in subimages:
     for key in requiredKeys:
       if subimage.get(key) is None:
@@ -114,6 +113,12 @@ def _spriteSize(subimages):
       sprite_width = pos_w + w
     if sprite_height < pos_h + h:
       sprite_height = pos_h + h
+  
+  # if (sprite_width % 8 != 0):
+  #   sprite_width = math.floor((sprite_width / 8) * 8) + 8
+  # if (sprite_height % 8 != 0):
+  #   sprite_height = math.floor((sprite_height / 8) * 8) + 8
+
   return sprite_width, sprite_height
 
 def _placeScore(subimages, subimage, strategy):
@@ -122,6 +127,7 @@ def _placeScore(subimages, subimage, strategy):
     return -1
   
   w,h = _spriteSize(subimages)
+
   match strategy:
     case 'hor':
       return h*10000 + h*1000 + subimage['posHor'] + subimage['posVer']
@@ -160,10 +166,16 @@ def _placeSubimage(subimages, subimage, strategy):
       posVer = subimage['posVer']
       bestScore = score
 
-  print(bestScore, posHor, posVer)
   subimage['posHor'] = posHor
   subimage['posVer'] = posVer
 
+def _setCssSelector(json_db):
+  prefix = json_db.get('cssSelectorPrefix', '')
+
+  for subimage in json_db['subimages']:
+    if subimage.get('cssSelector') is None:
+        # https://stackoverflow.com/questions/678236/how-do-i-get-the-filename-without-the-extension-from-a-path-in-python
+        subimage['cssSelector'] = prefix + Path(subimage['filename']).stem
 
 def create_sprites(spriteJsonFilename):
   try:
@@ -182,6 +194,7 @@ def create_sprites(spriteJsonFilename):
     _error(msg)
 
   sortSubimages(json_db)
+  _setCssSelector(json_db)
 
   for subimage in json_db['subimages']:
     if subimage.get('posHor') is None:

@@ -3,14 +3,14 @@
 .icon-facebook { background-position: -0px -0px; width: 32px; height: 32px; }
 .myyoutube:not(:hover) { background-position: -32px -0px; width: 32px; height: 32px; }
 #english-id { background-position: -0px -32px; width: 32px; height: 32px; }
-.france-flag::before { background-position: -32px -32px; width: 32px; height: 32px; }
-.small-play-after::after { background-position: -0px -64px; width: 20px; height: 20px; }
+.myicon-france::before { background-position: -32px -32px; width: 32px; height: 32px; }
+.myicon-play_20x20::after { background-position: -0px -64px; width: 20px; height: 20px; }
 
 .icon-facebook,
 .myyoutube:not(:hover),
 #english-id,
-.france-flag::before,
-.small-play-after::after{
+.myicon-france::before,
+.myicon-play_20x20::after{
   content: "";
   display: inline-block;
   vertical-align: middle;
