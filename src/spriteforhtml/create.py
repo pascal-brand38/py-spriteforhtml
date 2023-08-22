@@ -9,9 +9,9 @@ import json
 import shutil
 import functools
 
-
-
-# TODO: auto-position the sprite
+# TODO: strategy: square, hor, ver, auto (hor or ver, depending on the max size of images)
+# TODO: automatic css named class, with or without prefix
+# TODO: through command-line only, without json
 
 def _error(e):
   raise Exception(e)
@@ -43,9 +43,31 @@ def _checkJson(json_db):
       if subimage.get('posHor') is not None and subimage.get('posVer') is None:
         _error('Error in spriteforhtml.create.create_sprites: in "subimages", property posHor and posVer must be either both provided, either both absent')
 
-
   if json_db.get('spriteFilename') is None:
     _error('Error in spriteforhtml.create.create_sprites: property "spriteFilename" is missing')
+
+  strategy = json_db.get('strategy')
+  if strategy is not None:
+    if (strategy!='auto') and (strategy!='hor') and (strategy!='ver') and (strategy!='square'):
+      _error('Error in spriteforhtml.create.create_sprites: "strategy" must be "auto", "hor", "ver" or "square"')
+
+
+def _setStrategy(json_db):
+  if json_db.get('strategy') is None:
+    json_db['strategy'] = 'auto'
+  if json_db['strategy'] == 'auto':
+    w = -1
+    h = -1
+    for subimage in json_db['subimages']:
+      w1, h1 = subimage['pil'].size
+      w = max(w, w1)
+      h = max(h, h1)
+      if (w < h):
+        json_db['strategy'] = 'hor'
+      else:
+        json_db['strategy'] = 'ver'
+
+
 
 # Open sub images, and add them in the json_db to further usage
 def _openSubimages(json_db, rootDir):
@@ -110,11 +132,48 @@ def _compare(i1, i2):
 
   w1, h1 = i1['pil'].size
   w2, h2 = i2['pil'].size
+  return None, w1, h1, w2, h2
+  # return w2*h2 - w1*h1
+
+def _compareHor(i1, i2):
+  r, w1, h1, w2, h2 = _compare(i1, i2)
+  if r is not None:
+    return r
+  if (h1 > h2):
+    return -1
+  if (h1 < h2):
+    return +1
+  return w2 - w1
+  # return w2*h2 - w1*h1
+
+def _compareVer(i1, i2):
+  r, w1, h1, w2, h2 = _compare(i1, i2)
+  if r is not None:
+    return r
+  if (w1 > w2):
+    return -1
+  if (w1 < w2):
+    return +1
+  return h2 - h1
+  # return w2*h2 - w1*h1
+
+def _compareSquare(i1, i2):
+  r, w1, h1, w2, h2 = _compare(i1, i2)
+  if r is not None:
+    return r
   return w2*h2 - w1*h1
 
 # Calling
-def _sortSubimages(subimages):
-  subimages.sort(key=functools.cmp_to_key(_compare))
+def _sortSubimages(json_db):
+  cmp = None
+  match json_db['strategy']:
+    case 'hor':
+      cmp = _compareHor
+    case 'ver':
+      cmp = _compareVer
+    case 'square':
+      cmp = _compareSquare
+  json_db['subimages'].sort(key=functools.cmp_to_key(cmp))
 
 def _spriteSize(subimages):
   sprite_width = 0
@@ -132,16 +191,24 @@ def _spriteSize(subimages):
       sprite_height = pos_h + h
   return sprite_width, sprite_height
 
-def _placeScore(subimages, subimage):
+def _placeScore(subimages, subimage, strategy):
   error, msg = _checkOverlapping(subimages)
   if error:
     return -1
   
   w,h = _spriteSize(subimages)
-  return w*h + subimage['posHor'] + subimage['posVer']
+  match strategy:
+    case 'hor':
+      return h*10000 + h*1000 + subimage['posHor'] + subimage['posVer']
+    case 'ver':
+      return w*10000 + h*1000 + subimage['posHor'] + subimage['posVer']
+    case 'square':
+      return max(w,h)*10000 + subimage['posHor'] + subimage['posVer']
+    case _:
+      _error('Unknown strategy ' + strategy)
 
 
-def _placeSubimage(subimages, subimage):
+def _placeSubimage(subimages, subimage, strategy):
   posHor = 0
   posVer = 0
   bestScore = -1
@@ -153,7 +220,7 @@ def _placeSubimage(subimages, subimage):
     # place it at right
     subimage['posHor'] = s['posHor'] + s['pil'].width
     subimage['posVer'] = s['posVer']
-    score = _placeScore(subimages, subimage)
+    score = _placeScore(subimages, subimage, strategy)
     if (score != -1) and ((score < bestScore) or (bestScore == -1)):
       posHor = subimage['posHor']
       posVer = subimage['posVer']
@@ -162,7 +229,7 @@ def _placeSubimage(subimages, subimage):
     # place it below
     subimage['posHor'] = s['posHor']
     subimage['posVer'] = s['posVer'] + s['pil'].height
-    score = _placeScore(subimages, subimage)
+    score = _placeScore(subimages, subimage, strategy)
     if (score != -1) and ((score < bestScore) or (bestScore == -1)):
       posHor = subimage['posHor']
       posVer = subimage['posVer']
@@ -189,7 +256,8 @@ def create_sprites(spriteJsonFilename):
   if error:
     _error(msg)
 
-  _sortSubimages(json_db['subimages'])
+  _setStrategy(json_db)
+  _sortSubimages(json_db)
 
   cssString = '/* Generated using python package spriteforhtml */\n\n'
   cssAllClasses = ''
@@ -199,7 +267,7 @@ def create_sprites(spriteJsonFilename):
 
   for subimage in json_db['subimages']:
     if subimage.get('posHor') is None:
-      _placeSubimage(json_db['subimages'], subimage)
+      _placeSubimage(json_db['subimages'], subimage, json_db['strategy'])
     pos_w = int(subimage['posHor'])
     pos_h = int(subimage['posVer'])
     w = subimage['pil'].width
