@@ -170,14 +170,14 @@ def _placeSubimage(subimages, subimage, strategy):
   subimage['posVer'] = posVer
 
 def _setCssSelector(json_db):
-  prefix = json_db.get('cssSelectorPrefix', '')
+  prefix = json_db.get('cssSelectorPrefix', '.')
 
   for subimage in json_db['subimages']:
     if subimage.get('cssSelector') is None:
         # https://stackoverflow.com/questions/678236/how-do-i-get-the-filename-without-the-extension-from-a-path-in-python
         subimage['cssSelector'] = prefix + Path(subimage['filename']).stem
 
-def create_from_memory(json_db, rootDir):
+def create_from_memory(json_db, rootDir='.'):
   _checkJson(json_db)
   _openSubimages(json_db, rootDir)
 

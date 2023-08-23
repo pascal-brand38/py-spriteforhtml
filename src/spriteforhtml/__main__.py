@@ -80,8 +80,7 @@ def main():
       json_db['cssCommon'] = [ args.cssCommon ]
 
     print(json_db)
-    rootDir = '.'
-    create.create_from_memory(json_db, rootDir)
+    create.create_from_memory(json_db)
 
 if __name__ == "__main__":
     main()
