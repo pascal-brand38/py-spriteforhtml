@@ -90,20 +90,34 @@ In this demo, the outputs are created in the tmp rootdir (as specified in sprite
 ## Generating my sprite
 
 ### Command and API
-There are 2 ways to generate a sprite and css file:
-* Using the command line:
-  ```python -m spriteforhtml <mysprite.json>```
-* Using the API in your favorite python source, with the following:
+There are different ways to generate a sprite and css file:
+* Using the command line with subimages as arguments, such as
+```
+  python -m spriteforhtml \
+    --subimages english.png facebook.png france.png play_20x20.png youtube.png \
+    --spriteFilename=tmp/sprite
+```
+* Using the command line providing a json file
+```
+  python -m spriteforhtml -json <mysprite.json>
+```
+* Using the API, as a json object as aurgument
+```
+  from spriteforhtml.create import create_from_memory
+  create_from_memory('<jsonObject>')
+```
+* Using the API, as a json object as aurgument:
 ```
   from spriteforhtml.create import create_sprites
   create_sprites('<mysprite.json>')
 ```
 
-### <mysprite.json>
-This file is a json file format that includes all the information
-used to create the sprite: small images name, position in sprite,
-css class to generate, filenames of the resulting sprite, filename
-of the runsulting css file,...
+### Json file structure
+The json object providing the description of the sprite to create
+contain all kind of information:
+sub images name, position in sprite (optional),
+css class to generate (optional), filenames of the resulting
+sprite, filename of the runsulting css file (optional),...
 
 Do not hesitate to check 
 [the one of the demo](https://github.com/pascal-brand38/py-spriteforhtml/tree/main/src/spriteforhtml/data/sprite.json).
@@ -113,34 +127,57 @@ Note that in the following, when a path or a filename is considered, there are 2
 
 * an absolute path
 * a relative path: it is then relative to the
-  location of ```<mysprite.json>```
+  location of json file ```<mysprite.json>``` when provided
 
 <br />
 The properties of the json are:
 
-#### ```"subimages"```
+#### ```"subimages"``` (mandatory)
 A list of objects describing all the sub images to be used in the sprite.
 Each sub image is made of a json object containing the following properties:
-* ```"filename"```: the name of the subimage
-* ```"posHor"```: its horizontal position in the sprite
-* ```"posVer"```: its vertical position in the sprite
-* ```"cssSelector"```: the css selector to use it in html.  It can be a class
-  (starting with a .), an id (starting with a #),...
-* ```"cssPseudo"```: It is optional. If present, this is the
+* ```"filename"``` (mandatory):
+  the name of the subimage, is mandatory
+* ```"posHor"``` (optional): its horizontal position in the sprite.
+  When missing, the best position, according to the
+  chosen strategy (see below), is found.
+* ```"posVer"```  (optional): its vertical position in the sprite.
+  Note that either both posHor and posVer are provided,
+  or they are both missing
+* ```"cssSelector"```  (optional):
+  the css selector to use it in html. 
+  It can be a class (starting with a .),
+  an id (starting with a #),...
+  If not present, the css selector name will be the global
+  ```cssSelectorPrefix``` (see below), being '.' by default
+* ```"cssPseudo"```  (optional):
+  If present, this is the
   [pseudo-class](https://developer.mozilla.org/fr/docs/Web/CSS/Pseudo-classes)
   added at the end of the ```cssSelector```
 
-
-#### ```"spriteFilename"``` 
+#### ```"spriteFilename"```  (mandatory)
 A string of the name of the resulting sprite, without the image extension.
 2 versions is be created: a ```.png```, and a ```.webp```.
 
-### ```"cssCommon"```
+#### ```"strategy"```  (optional)
+This is the algorithm strategy to place subimages in the sprite,
+when posHor and posVer are not provided.
+
+The strategy can have the following values:
+* ```hor```: the generated sprite will be a rectangle with the minimum
+  height
+* ```ver```: the generated sprite will be a rectangle with
+  the minimum width
+* ```square```: the generated sprite will be as squared as possible
+* ```auto``` (default value): either ```hor``` (when
+  the max height of the subimages is greater than the max width 
+  of the subimages) or ```ver``` is chosen
+
+#### ```"cssCommon"```  (optional)
 A list of 
 [css rules](https://developer.mozilla.org/fr/docs/Learn/Getting_started_with_the_web/CSS_basics) ```"property: value;"``` 
 common to
-all the designated selectors for the sprite.
-Typically, we could have ```"display: inline-block;```.
+all the designated selectors of the sprite.
+Typically, we could have ```"display": inline-block;```.
 
 Here, this is **important** to add the background-image
 property, with the correct path of the sprite image. As an example, it could be
@@ -149,14 +186,53 @@ property, with the correct path of the sprite image. As an example, it could be
 ```
 
 
-#### ```cssFilename```
-This is an optional property.
+
+#### ```"cssFilename"```  (optional)
 If present, a css file containing the selectors
 is created. This css file can then be used by your html.
 
 If not present, the generated css content is displayed on
 the console.
 
+#### ```"cssSelectorPrefix"``` (optional)
+In case the ```cssSelector``` property is not set for a subimage,
+its cssSelector is generated using the image filename, prefixed
+with ```cssSelectorPrefix``` (its default value is ```'.'```)
+
+### Command line
+The above json file can be provided to the command line
+```python -m spriteforhtml -json <sprite.json>```, or using
+the API functions ```create_from_memory``` and
+```create_sprites```
+
+But this is also possible to call the command-line without
+a json file providing the following options. From these options,
+a json object is created in memory, and then
+```create_from_memory``` is called.
+
+* ```--spriteFilename <spritename>``` (mandatory):
+  Name of the sprite images to be created, without the image
+  extension.
+  In the json object, it populates `spriteFilename` property
+* ```--spriteFilename img1.png, img2.png...``` (mandatory):
+  all the subimage names to be used to create the sprite.
+  In the json object, it populates `"subimages" "filename"`
+* ```--strategy <value>``` (optional):
+  The placement strategy to be used.
+  Default is `auto`.
+  In the json object, it populates ```strategy```
+* ```--cssSelectorPrefix <value>``` (optional):
+  In the json object, it populates ```cssSelectorPrefix```
+* ```--cssPseudo <value>``` (optional):
+  In the json object, it populates ```cssPseudo```
+  of all subimages
+* ```--cssFilename <filename>``` (optional):
+  Css file to create
+  In the json object, it populates ```cssFilename```
+* ```--cssCommon <value>``` (optional):
+  A string of all css rules to be added  to
+  all the designated selectors of the sprite
+  In the json object, it populates ```cssCommon```
 
 ### Use the result
 To basically use the generated files, you must add in the
