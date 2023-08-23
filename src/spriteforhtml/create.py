@@ -177,15 +177,7 @@ def _setCssSelector(json_db):
         # https://stackoverflow.com/questions/678236/how-do-i-get-the-filename-without-the-extension-from-a-path-in-python
         subimage['cssSelector'] = prefix + Path(subimage['filename']).stem
 
-def create_sprites(spriteJsonFilename):
-  try:
-    with open(spriteJsonFilename, encoding='utf-8') as file:
-      json_db = json.load(file)
-  except Exception as err:
-    print(err)
-    _error('Error in spriteforhtml.create.create_sprites when opening ' + spriteJsonFilename)
-
-  rootDir = os.path.dirname(spriteJsonFilename)
+def create_from_memory(json_db, rootDir):
   _checkJson(json_db)
   _openSubimages(json_db, rootDir)
 
@@ -267,3 +259,13 @@ def create_sprites(spriteJsonFilename):
       file.close()
     print('Save ' +  cssFilename)
 
+def create_sprites(spriteJsonFilename):
+  try:
+    with open(spriteJsonFilename, encoding='utf-8') as file:
+      json_db = json.load(file)
+  except Exception as err:
+    print(err)
+    _error('Error in spriteforhtml.create.create_sprites when opening ' + spriteJsonFilename)
+
+  rootDir = os.path.dirname(spriteJsonFilename)
+  create_from_memory(json_db, rootDir)

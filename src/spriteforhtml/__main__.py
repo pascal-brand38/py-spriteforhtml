@@ -1,16 +1,91 @@
-# __main__.py
+# MIT License
+# Copyright (c) 2023 Pascal Brand
 
-import sys, os
+'''
+To be called with
+  python -m spriteforhtml ...
+
+
+if no arguments, same as
+  python -m spriteforhtml <dirofmain>/data/sprite.json
+'''
+
+import sys, os, argparse
 from spriteforhtml import create
 
+
+def createParser():
+  parser = argparse.ArgumentParser(
+     prog='spriteforhtml',
+     description='Creation of png and webp sprite to be used in html ',
+     formatter_class=argparse.RawTextHelpFormatter
+     )
+  parser.add_argument('--json', 
+                      help='json file describing the sprite to create.\nIf provided, the other options are not considered', 
+                      required=False)
+  parser.add_argument('--spriteFilename', 
+                      help='Required when no json is provided.\nPopulate spriteFilename property', 
+                      required=False)
+  parser.add_argument('--subimages', nargs='*', 
+                      help='Required when no json is provided.\nPopulate all subimages filename', 
+                      required=False)
+  parser.add_argument('--cssSelectorPrefix', 
+                      help='Populate cssSelectorPrefix property', 
+                      required=False)
+  parser.add_argument('--strategy', 
+                      help='Populate strategy property', 
+                      required=False)
+  parser.add_argument('--cssFilename', 
+                      help='Populate cssFilename property', 
+                      required=False)
+  parser.add_argument('--cssCommon', 
+                      help='Populate cssCommon property', 
+                      required=False)
+  parser.add_argument('--cssPseudo', 
+                      help='Populate cssPseudo property of all subimages', 
+                      required=False)
+  
+  return parser
+
 def main():
+  parser = createParser()
+  args = parser.parse_args()
+
+  print('parser = ', args)
+  
   argv = sys.argv
   if len(argv) == 1:
-    spriteJsonFilename = os.path.dirname(__file__) + '/data/sprite.json'
+    create.create_sprites(os.path.dirname(__file__) + '/data/sprite.json')
+  elif args.json is not None:
+    create.create_sprites(args.json)
   else:
-     spriteJsonFilename = argv[1]
+    json_db = {}
+    list = [
+      [ 'cssSelectorPrefix', args.cssSelectorPrefix ],
+      [ 'spriteFilename', args.spriteFilename ],
+      [ 'strategy', args.strategy ],
+      [ 'cssFilename', args.cssFilename ],
+    ]
+    for l in list:
+      if l[1] is not None:
+        json_db[l[0]] = l[1]
+    json_db['subimages'] = []
+    for s in args.subimages:
+      if args.cssPseudo is not None:
+        json_db['subimages'].append( { "filename": s, "cssPseudo": args.cssPseudo })
+      else:
+        json_db['subimages'].append( { "filename": s })
 
-  create.create_sprites(spriteJsonFilename)
+    if args.cssCommon is not None:
+      json_db['cssCommon'] = [ args.cssCommon ]
+
+    print(json_db)
+    rootDir = '.'
+    create.create_from_memory(json_db, rootDir)
 
 if __name__ == "__main__":
     main()
+
+
+# python -m pip install . && python -m spriteforhtml --cssSelectorPrefix=.myicon- --subimages src/spriteforhtml/data/{english.png,facebook.png,france.png,play_20x20.png,youtube.png} --spriteFilename=/c/tmp/pascal --strategy=square --cssFilename=/c/tmp/pascal.css --cssCommon="content: \"\"; display: inline-block; vertical-align: middle; background-image:url(sprite.png);"  --cssPseudo=::before
+
