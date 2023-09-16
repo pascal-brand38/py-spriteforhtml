@@ -57,13 +57,12 @@ def _compareSquare(i1, i2):
 def sortSubimages(json_db):
   _setStrategy(json_db)
   cmp = None
-  match json_db['strategy']:
-    case 'hor':
-      cmp = _compareHor
-    case 'ver':
-      cmp = _compareVer
-    case 'square':
-      cmp = _compareSquare
+  if json_db['strategy'] == 'hor':
+    cmp = _compareHor
+  elif json_db['strategy'] == 'ver':
+    cmp = _compareVer
+  elif json_db['strategy'] == 'square':
+    cmp = _compareSquare
   json_db['subimages'].sort(key=functools.cmp_to_key(cmp))
 
 

@@ -10,7 +10,9 @@ if no arguments, same as
   python -m spriteforhtml <dirofmain>/data/sprite.json
 '''
 
-import sys, os, argparse
+import sys
+import os
+import argparse
 from spriteforhtml import create
 
 
@@ -60,21 +62,21 @@ def main():
     create.create_sprites(args.json)
   else:
     json_db = {}
-    list = [
+    mylist = [  
       [ 'cssSelectorPrefix', args.cssSelectorPrefix ],
       [ 'spriteFilename', args.spriteFilename ],
       [ 'strategy', args.strategy ],
       [ 'cssFilename', args.cssFilename ],
     ]
-    for l in list:
-      if l[1] is not None:
-        json_db[l[0]] = l[1]
+    for item in mylist:
+      if item[1] is not None:
+        json_db[item[0]] = item[1]
     json_db['subimages'] = []
-    for s in args.subimages:
+    for sub in args.subimages:
       if args.cssPseudo is not None:
-        json_db['subimages'].append( { "filename": s, "cssPseudo": args.cssPseudo })
+        json_db['subimages'].append( { "filename": sub, "cssPseudo": args.cssPseudo })
       else:
-        json_db['subimages'].append( { "filename": s })
+        json_db['subimages'].append( { "filename": sub })
 
     if args.cssCommon is not None:
       json_db['cssCommon'] = [ args.cssCommon ]
@@ -83,8 +85,4 @@ def main():
     create.create_from_memory(json_db)
 
 if __name__ == "__main__":
-    main()
-
-
-# python -m pip install . && python -m spriteforhtml --cssSelectorPrefix=.myicon- --subimages src/spriteforhtml/data/{english.png,facebook.png,france.png,play_20x20.png,youtube.png} --spriteFilename=/c/tmp/pascal --strategy=square --cssFilename=/c/tmp/pascal.css --cssCommon="content: \"\"; display: inline-block; vertical-align: middle; background-image:url(sprite.png);"  --cssPseudo=::before
-
+  main()

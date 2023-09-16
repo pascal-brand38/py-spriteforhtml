@@ -2,14 +2,13 @@
 #
 # Copyright (c) 2023 Pascal Brand
 
-from PIL import Image
-import os, json, shutil, math
+import os
+import json
+import shutil
 from pathlib import Path
+from PIL import Image
 
 from ._sort import sortSubimages
-
-# TODO: automatic css named class, with or without prefix
-# TODO: through command-line only, without json
 
 def _error(e):
   raise Exception(e)
@@ -46,7 +45,7 @@ def _checkJson(json_db):
 
   strategy = json_db.get('strategy')
   if strategy is not None:
-    if (strategy!='auto') and (strategy!='hor') and (strategy!='ver') and (strategy!='square'):
+    if (strategy not in [ 'auto', 'hor', 'ver', 'square']):
       _error('Error in spriteforhtml.create.create_sprites: "strategy" must be "auto", "hor", "ver" or "square"')
 
 
@@ -122,21 +121,20 @@ def _spriteSize(subimages):
   return sprite_width, sprite_height
 
 def _placeScore(subimages, subimage, strategy):
-  error, msg = _checkOverlapping(subimages)
+  error, _ = _checkOverlapping(subimages)
   if error:
     return -1
   
   w,h = _spriteSize(subimages)
 
-  match strategy:
-    case 'hor':
-      return h*10000 + h*1000 + subimage['posHor'] + subimage['posVer']
-    case 'ver':
-      return w*10000 + h*1000 + subimage['posHor'] + subimage['posVer']
-    case 'square':
-      return max(w,h)*10000 + subimage['posHor'] + subimage['posVer']
-    case _:
-      _error('Unknown strategy ' + strategy)
+  if strategy == 'hor':
+    return h*10000 + h*1000 + subimage['posHor'] + subimage['posVer']
+  elif strategy == 'ver':
+    return w*10000 + h*1000 + subimage['posHor'] + subimage['posVer']
+  elif strategy == 'square':
+    return max(w,h)*10000 + subimage['posHor'] + subimage['posVer']
+  else:
+    return _error('Unknown strategy ' + strategy)
 
 
 def _placeSubimage(subimages, subimage, strategy):
@@ -174,8 +172,8 @@ def _setCssSelector(json_db):
 
   for subimage in json_db['subimages']:
     if subimage.get('cssSelector') is None:
-        # https://stackoverflow.com/questions/678236/how-do-i-get-the-filename-without-the-extension-from-a-path-in-python
-        subimage['cssSelector'] = prefix + Path(subimage['filename']).stem
+      # https://stackoverflow.com/questions/678236/how-do-i-get-the-filename-without-the-extension-from-a-path-in-python
+      subimage['cssSelector'] = prefix + Path(subimage['filename']).stem
 
 def create_from_memory(json_db, rootDir='.'):
   _checkJson(json_db)
@@ -269,3 +267,5 @@ def create_sprites(spriteJsonFilename):
 
   rootDir = os.path.dirname(spriteJsonFilename)
   create_from_memory(json_db, rootDir)
+
+# pylint           --indent-string='  '           --disable C0103,C0303,C0301,C0116,C0114,C0325,R1705 src/spriteforhtml/create.py

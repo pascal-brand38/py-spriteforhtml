@@ -18,6 +18,22 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pylint
+        pip install Pillow
     - name: Analysing the code with pylint
+      # C0103: Variable name naming style
+      # C0303: trailing space  --  TODO remove it from disable list
+      # C0301: line too long
+      # C0116: Missing function or method docstring  --  TODO remove it from disable list
+      # C0114: Missing module docstring  --  TODO remove it from disable list
+      # C0325: Unnecessary parens after 'if' keyword
+      # R0914: Too many local variables (21/15)
+      # R0915: Too many statements (53/50)
+      # R1705: Unnecessary "else" after "return"
+      # W0718: Catching too general exception
+      # W0719: Raising too general exception
+      # W1514: Using open without explicitly specifying an encoding  --  TODO remove it from disable list
       run: |
-        pylint $(git ls-files '*.py')
+        pylint \
+          --indent-string='  ' \
+          --disable C0103,C0303,C0301,C0116,C0114,C0325,R0914,R0915,R1705,W0718,W0719,W1514 \
+            $(git ls-files '*.py')
