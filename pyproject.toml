@@ -31,3 +31,9 @@ dependencies = [
 # datas are used by __main__.py when demo
 [tool.setuptools.package-data]
 "spriteforhtml" = ["data/*"]
+
+# https://stackoverflow.com/questions/10253826/path-issue-with-pytest-importerror-no-module-named
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
