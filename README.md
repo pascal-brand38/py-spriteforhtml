@@ -1,3 +1,15 @@
+<p>
+<a
+  href="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml">
+  <img 
+    alt="GitHub Actions build status (Lint)"
+    src="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml/badge.svg"
+  >
+</a>
+</p>
+
+<br>
+
 # Introduction
 
 **spriteforhtml** is a python package aimed at building a sprite from small images.
@@ -253,15 +265,19 @@ You may refer to the
 
 # Releases
 
-## 1.0
-
-Initial version
-* Use json file
-* Subimage description include their placement
-
 ## 1.1
 
 * Automatic placement, with multiple strategies
 * command-line without json file
 * Automatic css selector naming
 * API using json object
+
+### 1.1.1
+* Fix python v3.8 and v3.9 (match instruction)
+* Pylint
+
+## 1.0
+
+Initial version
+* Use json file
+* Subimage description include their placement
