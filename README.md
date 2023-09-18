@@ -1,30 +1,9 @@
-<p>
-  <a
-    href="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml">
-    <img 
-      alt="GitHub Actions build status (Lint)"
-      src="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml/badge.svg"
-    >
-  </a>
-  <a
-    href="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/python-app.yml">
-    <img 
-      alt="GitHub Actions build status (Pytest)"
-      src="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/python-app.yml/badge.svg"
-    >
-  </a>
+[![Lint](https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml/badge.svg)](https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml)
+[![Pytest](https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/python-app.yml/badge.svg)](https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/python-app.yml)
 
-  <a
-    href="https://pypi.org/project/spriteforhtml/">
-    <img
-      alt="Newest PyPI version"
-      src="https://img.shields.io/pypi/v/spriteforhtml.svg">
-  </a>
-  <a href="https://pypi.org/project/spriteforhtml/">
-  <img
-      alt="Number of PyPI downloads"
-      src="https://img.shields.io/pypi/dm/spriteforhtml.svg"></a>
-</p>
+[![Pypi version](https://img.shields.io/pypi/v/spriteforhtml.svg)](https://pypi.org/project/spriteforhtml)
+[![Pypi Download](https://img.shields.io/pypi/dm/spriteforhtml.svg)](https://pypi.org/project/spriteforhtml)
+
 
 
 # Introduction
