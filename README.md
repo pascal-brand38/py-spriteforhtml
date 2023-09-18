@@ -1,14 +1,31 @@
 <p>
-<a
-  href="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml">
-  <img 
-    alt="GitHub Actions build status (Lint)"
-    src="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml/badge.svg"
-  >
-</a>
+  <a
+    href="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml">
+    <img 
+      alt="GitHub Actions build status (Lint)"
+      src="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml/badge.svg"
+    >
+  </a>
+  <a
+    href="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/python-app.yml">
+    <img 
+      alt="GitHub Actions build status (Pytest)"
+      src="https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/python-app.yml/badge.svg"
+    >
+  </a>
+
+  <a
+    href="https://pypi.org/project/spriteforhtml/">
+    <img
+      alt="Newest PyPI version"
+      src="https://img.shields.io/pypi/v/spriteforhtml.svg">
+  </a>
+  <a href="https://pypi.org/project/spriteforhtml/">
+  <img
+      alt="Number of PyPI downloads"
+      src="https://img.shields.io/pypi/dm/spriteforhtml.svg"></a>
 </p>
 
-<br>
 
 # Introduction
 
@@ -274,7 +291,7 @@ You may refer to the
 
 ### 1.1.1
 * Fix python v3.8 and v3.9 (match instruction)
-* Pylint
+* Pylint and pytest
 
 ## 1.0
 
