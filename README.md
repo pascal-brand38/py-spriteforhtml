@@ -1,4 +1,3 @@
-[![Lint](https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml/badge.svg)](https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/pylint.yml)
 [![Pytest](https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/python-app.yml/badge.svg)](https://github.com/pascal-brand38/py-spriteforhtml/actions/workflows/python-app.yml)
 
 [![Pypi version](https://img.shields.io/pypi/v/spriteforhtml.svg)](https://pypi.org/project/spriteforhtml)
