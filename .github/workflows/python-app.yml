@@ -32,7 +32,6 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Lint with pylint
       # C0103: Variable name naming style
-      # C0303: trailing space  --  TODO remove it from disable list
       # C0301: line too long
       # C0116: Missing function or method docstring  --  TODO remove it from disable list
       # C0114: Missing module docstring  --  TODO remove it from disable list
@@ -46,9 +45,8 @@ jobs:
       run: |
         pylint \
           --indent-string='  ' \
-          --disable C0103,C0303,C0301,C0116,C0114,C0325,R0914,R0915,R1705,W0718,W0719,W1514 \
+          --disable C0103,C0301,C0116,C0114,C0325,R0914,R0915,R1705,W0718,W0719,W1514 \
             $(git ls-files '*.py')
     - name: Test with pytest
       run: |
         pytest tests/unit.py
-

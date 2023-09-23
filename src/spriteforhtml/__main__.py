@@ -22,31 +22,31 @@ def createParser():
      description='Creation of png and webp sprite to be used in html ',
      formatter_class=argparse.RawTextHelpFormatter
      )
-  parser.add_argument('--json', 
-                      help='json file describing the sprite to create.\nIf provided, the other options are not considered', 
+  parser.add_argument('--json',
+                      help='json file describing the sprite to create.\nIf provided, the other options are not considered',
                       required=False)
-  parser.add_argument('--spriteFilename', 
-                      help='Required when no json is provided.\nPopulate spriteFilename property', 
+  parser.add_argument('--spriteFilename',
+                      help='Required when no json is provided.\nPopulate spriteFilename property',
                       required=False)
-  parser.add_argument('--subimages', nargs='*', 
-                      help='Required when no json is provided.\nPopulate all subimages filename', 
+  parser.add_argument('--subimages', nargs='*',
+                      help='Required when no json is provided.\nPopulate all subimages filename',
                       required=False)
-  parser.add_argument('--cssSelectorPrefix', 
-                      help='Populate cssSelectorPrefix property', 
+  parser.add_argument('--cssSelectorPrefix',
+                      help='Populate cssSelectorPrefix property',
                       required=False)
-  parser.add_argument('--strategy', 
-                      help='Populate strategy property', 
+  parser.add_argument('--strategy',
+                      help='Populate strategy property',
                       required=False)
-  parser.add_argument('--cssFilename', 
-                      help='Populate cssFilename property', 
+  parser.add_argument('--cssFilename',
+                      help='Populate cssFilename property',
                       required=False)
-  parser.add_argument('--cssCommon', 
-                      help='Populate cssCommon property', 
+  parser.add_argument('--cssCommon',
+                      help='Populate cssCommon property',
                       required=False)
-  parser.add_argument('--cssPseudo', 
-                      help='Populate cssPseudo property of all subimages', 
+  parser.add_argument('--cssPseudo',
+                      help='Populate cssPseudo property of all subimages',
                       required=False)
-  
+
   return parser
 
 def main():
@@ -54,7 +54,7 @@ def main():
   args = parser.parse_args()
 
   print('parser = ', args)
-  
+
   argv = sys.argv
   if len(argv) == 1:
     create.create_sprites(os.path.dirname(__file__) + '/data/sprite.json')
@@ -62,7 +62,7 @@ def main():
     create.create_sprites(args.json)
   else:
     json_db = {}
-    mylist = [  
+    mylist = [
       [ 'cssSelectorPrefix', args.cssSelectorPrefix ],
       [ 'spriteFilename', args.spriteFilename ],
       [ 'strategy', args.strategy ],

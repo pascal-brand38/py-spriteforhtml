@@ -70,7 +70,7 @@ def _isOutside(a1, b1, a2, b2):
   if (a2>b1) and (b2>b1):
     return True
   return False
-  
+
 def _checkUnitOverlapping(i1, i2):
   ax1, bx1, ay1, by1 = _getCoords(i1)
   ax2, bx2, ay2, by2 = _getCoords(i2)
@@ -78,7 +78,7 @@ def _checkUnitOverlapping(i1, i2):
     return False
   if (_isOutside(ay1, by1, ay2, by2)):
     return False
-  
+
   return True
 
 def _checkOverlapping(subimages):
@@ -112,7 +112,7 @@ def _spriteSize(subimages):
       sprite_width = pos_w + w
     if sprite_height < pos_h + h:
       sprite_height = pos_h + h
-  
+
   # if (sprite_width % 8 != 0):
   #   sprite_width = math.floor((sprite_width / 8) * 8) + 8
   # if (sprite_height % 8 != 0):
@@ -124,7 +124,7 @@ def _placeScore(subimages, subimage, strategy):
   error, _ = _checkOverlapping(subimages)
   if error:
     return -1
-  
+
   w,h = _spriteSize(subimages)
 
   if strategy == 'hor':
@@ -189,7 +189,7 @@ def create_from_memory(json_db, rootDir='.'):
   for subimage in json_db['subimages']:
     if subimage.get('posHor') is None:
       _placeSubimage(json_db['subimages'], subimage, json_db['strategy'])
-  
+
   sprite_width, sprite_height = _spriteSize(json_db['subimages'])
 
   sprite = Image.new(
@@ -212,11 +212,11 @@ def create_from_memory(json_db, rootDir='.'):
       + ' width: ' + str(i.width) + 'px;'                                                               \
       + ' height: ' + str(i.height) + 'px;'                                                             \
       + ' }\n'
-    
+
     if cssAllClasses != '':
       cssAllClasses += ',\n'
     cssAllClasses += subimage['cssSelector'] + pseudo
-  
+
   cssCommon = json_db.get('cssCommon')
   if cssCommon is not None:
     cssAllClasses += '{\n'
