@@ -8,10 +8,16 @@ permissions:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
+        os: [
+          "macos-latest",
+          "ubuntu-latest",
+          "windows-latest",
+        ]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v3
@@ -23,7 +29,20 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest Pillow pylint
+
+    - name: Install Linux dependencies
+      if: startsWith(matrix.os, 'ubuntu')
+      run: |
         sudo apt-get install optipng
+    - name: Install Macos dependencies
+      if: startsWith(matrix.os, 'macos')
+      run: |
+        brew install optipng
+    - name: Install Windows dependencies
+      if: startsWith(matrix.os, 'windows')
+      run: |
+        choco install optipng
+
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
