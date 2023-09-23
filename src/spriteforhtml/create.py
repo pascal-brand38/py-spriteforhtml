@@ -5,6 +5,8 @@
 import os
 import json
 import shutil
+import platform
+import tempfile
 from pathlib import Path
 from PIL import Image
 
@@ -18,6 +20,11 @@ def _error(e):
 # root directory of the sprite json desription file
 def _getFullFilename(filename, root):
   if (os.path.isabs(filename)):
+    if (filename[0] == '/') and (platform.system() == "Windows"):
+      if filename.startswith('/tmp/'):
+        filename = tempfile.gettempdir() + filename[4:]
+      elif (len(filename) > 3) and (filename[2] != '/'):
+        filename = 'C:' + filename
     return filename
   else:
     return root + '/' + filename

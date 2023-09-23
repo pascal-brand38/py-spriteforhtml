@@ -43,10 +43,7 @@ jobs:
       # W0719: Raising too general exception
       # W1514: Using open without explicitly specifying an encoding  --  TODO remove it from disable list
       run: |
-        pylint \
-          --indent-string='  ' \
-          --disable C0103,C0301,C0116,C0114,C0325,R0914,R0915,R1705,W0718,W0719,W1514 \
-            $(git ls-files '*.py')
+        pylint --indent-string='  ' --disable C0103,C0301,C0116,C0114,C0325,R0914,R0915,R1705,W0718,W0719,W1514 $(git ls-files '*.py')
     - name: Test with pytest
       run: |
         pytest tests/unit.py

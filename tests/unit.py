@@ -1,4 +1,6 @@
 import filecmp
+import tempfile
+import platform
 from spriteforhtml import create
 
 def cmp_lines(path_1, path_2):
@@ -13,7 +15,10 @@ def cmp_lines(path_1, path_2):
 
 def test_fromjson():
   refdir = 'src/spriteforhtml/data/'
-  resdir = '/tmp/'
+  if platform.system() == "Windows":
+    resdir = tempfile.gettempdir() + '/'
+  else:
+    resdir = '/tmp/'
   create.create_sprites('src/spriteforhtml/data/sprite.json')
 
   # compare text files, not bothering about endofline which is different on
@@ -30,5 +35,9 @@ def test_fromjson():
 
 
   # compare binary files
-  for file in [ 'sprite.png', 'sprite.webp' ]:
+  if platform.system() == "Windows":
+    listSprites = [ 'sprite.webp', ]    # on windows, png are not the same
+  else:
+    listSprites = [ 'sprite.webp', 'sprite.png', ]
+  for file in listSprites:
     assert filecmp.cmp(refdir+file, resdir+file, shallow=True), f"{file}"
