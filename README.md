@@ -61,7 +61,7 @@ For more information about sprites and their benefits, here is a link selection:
 
 Run ```python -m pip install spriteforhtlm``` to install the python package.
 
-Also, please install the optional binary ```optipng``` 
+Also, please install the optional binary ```optipng```
 (using apt-get, pacman, or directly from
 [sourceforge](https://optipng.sourceforge.net/))
 to further optimize the png version of the sprite.
@@ -81,7 +81,7 @@ will use your own json file.
 
 and it will result
 
-* [sprite.png](https://github.com/pascal-brand38/py-spriteforhtml/tree/main/src/spriteforhtml/data/sprite.png) and 
+* [sprite.png](https://github.com/pascal-brand38/py-spriteforhtml/tree/main/src/spriteforhtml/data/sprite.png) and
 [sprite.webp](https://github.com/pascal-brand38/py-spriteforhtml/tree/main/src/spriteforhtml/data/sprite.webp),
 the resulting sprite images
 
@@ -126,7 +126,7 @@ sub images name, position in sprite (optional),
 css class to generate (optional), filenames of the resulting
 sprite, filename of the runsulting css file (optional),...
 
-Do not hesitate to check 
+Do not hesitate to check
 [the one of the demo](https://github.com/pascal-brand38/py-spriteforhtml/tree/main/src/spriteforhtml/data/sprite.json).
 
 <br />
@@ -151,7 +151,7 @@ Each sub image is made of a json object containing the following properties:
   Note that either both posHor and posVer are provided,
   or they are both missing
 * ```"cssSelector"```  (optional):
-  the css selector to use it in html. 
+  the css selector to use it in html.
   It can be a class (starting with a .),
   an id (starting with a #),...
   If not present, the css selector name will be the global
@@ -176,12 +176,12 @@ The strategy can have the following values:
   the minimum width
 * ```square```: the generated sprite will be as squared as possible
 * ```auto``` (default value): either ```hor``` (when
-  the max height of the subimages is greater than the max width 
+  the max height of the subimages is greater than the max width
   of the subimages) or ```ver``` is chosen
 
 #### ```"cssCommon"```  (optional)
-A list of 
-[css rules](https://developer.mozilla.org/fr/docs/Learn/Getting_started_with_the_web/CSS_basics) ```"property: value;"``` 
+A list of
+[css rules](https://developer.mozilla.org/fr/docs/Learn/Getting_started_with_the_web/CSS_basics) ```"property: value;"```
 common to
 all the designated selectors of the sprite.
 Typically, we could have ```"display": inline-block;```.
@@ -248,13 +248,13 @@ for example
 ```
 
 and use the icons in the body. This usage depends on the
-way the selectors are defined in your sprite.json, 
+way the selectors are defined in your sprite.json,
 but it can be typically
 ```
   <span class="icon-facebook">  </span>
 ```
 
-You may refer to the 
+You may refer to the
 [example page](https://github.com/pascal-brand38/py-spriteforhtml/tree/main/src/spriteforhtml/data/page.html).
 
 
@@ -270,6 +270,10 @@ You may refer to the
 ### 1.1.1
 * Fix python v3.8 and v3.9 (match instruction)
 * Pylint and pytest
+
+### 1.1.2
+* Fix absolute paths on windows
+* Automatic testing on ubuntu, windows and macos
 
 ## 1.0
 
