@@ -11,6 +11,7 @@ from pathlib import Path
 from PIL import Image
 
 from ._sort import sortSubimages
+from ._overlapping import checkOverlapping
 
 def _error(e):
   raise Exception(e)
@@ -63,47 +64,6 @@ def _openSubimages(json_db, rootDir):
     i = Image.open(name)
     subimage['pil'] = i
 
-# check for subimage overlapping
-def _getCoords(i):
-  ax = i['posHor']
-  bx = ax + i['pil'].width - 1
-  ay = i['posVer']
-  by = ay + i['pil'].height - 1
-  return ax, bx, ay, by
-
-def _isOutside(a1, b1, a2, b2):
-  if (a2<a1) and (b2<a1):
-    return True
-  if (a2>b1) and (b2>b1):
-    return True
-  return False
-
-def _checkUnitOverlapping(i1, i2):
-  ax1, bx1, ay1, by1 = _getCoords(i1)
-  ax2, bx2, ay2, by2 = _getCoords(i2)
-  if (_isOutside(ax1, bx1, ax2, bx2)):
-    return False
-  if (_isOutside(ay1, by1, ay2, by2)):
-    return False
-
-  return True
-
-def _checkOverlapping(subimages):
-  for i1 in subimages:
-    for i2 in subimages:
-      # do not check the same image
-      if (i1 == i2):
-        continue
-
-      # do not check if one is not placed yet
-      if (i1.get('posHor') is None) or (i2.get('posHor') is None):
-        continue
-
-      if _checkUnitOverlapping(i1, i2):
-        return True, 'Subimages ' + i1['filename'] + ' and ' + i2['filename'] + ' overlap'
-  return False, ''
-
-
 
 def _spriteSize(subimages):
   sprite_width = 0
@@ -128,7 +88,7 @@ def _spriteSize(subimages):
   return sprite_width, sprite_height
 
 def _placeScore(subimages, subimage, strategy):
-  error, _ = _checkOverlapping(subimages)
+  error, _ = checkOverlapping(subimages)
   if error:
     return -1
 
@@ -182,11 +142,45 @@ def _setCssSelector(json_db):
       # https://stackoverflow.com/questions/678236/how-do-i-get-the-filename-without-the-extension-from-a-path-in-python
       subimage['cssSelector'] = prefix + Path(subimage['filename']).stem
 
+def _saveResults(json_db, rootDir, sprite, cssString):
+  spriteFilename = _getFullFilename(json_db['spriteFilename'], rootDir)
+  png_result = spriteFilename + '.png'
+  print('Save ' +  png_result)
+  sprite.save(png_result, optimize=True)
+  if (shutil.which('optipng') is not None):
+    error = os.system('optipng ' + png_result)
+    if error != 0:
+      _error('Error in spriteforhtml.create.create_sprites related to optipng')
+  else:
+    print('Install optipng to get benefits of an even better optimization of .png file')
+
+
+  # save as webp
+  # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#webp
+  # method=6 provides a better size, but is slow
+  webp_result = spriteFilename + '.webp'
+  print('Save ' +  webp_result)
+  sprite.save(webp_result, method=6, quality=100, lossless=True)
+
+  # save css file, or print on the console
+  cssFilename = json_db.get('cssFilename')
+  if cssFilename is None:
+    print('\n=======================  copy/paste the sprite position in your favorite css file')
+    print(cssString)
+    print('=======================')
+  else:
+    cssFilename = _getFullFilename(cssFilename, rootDir)
+    with open(cssFilename, 'w') as file:
+      file.write(cssString)
+      file.close()
+    print('Save ' +  cssFilename)
+
+
 def create_from_memory(json_db, rootDir='.'):
   _checkJson(json_db)
   _openSubimages(json_db, rootDir)
 
-  error, msg = _checkOverlapping(json_db['subimages'])
+  error, msg = checkOverlapping(json_db['subimages'])
   if error:
     _error(msg)
 
@@ -232,37 +226,8 @@ def create_from_memory(json_db, rootDir='.'):
     cssAllClasses += '}\n'
     cssString += '\n' + cssAllClasses
 
-  spriteFilename = _getFullFilename(json_db['spriteFilename'], rootDir)
-  png_result = spriteFilename + '.png'
-  print('Save ' +  png_result)
-  sprite.save(png_result, optimize=True)
-  if (shutil.which('optipng') is not None):
-    error = os.system('optipng ' + png_result)
-    if error != 0:
-      _error('Error in spriteforhtml.create.create_sprites related to optipng')
-  else:
-    print('Install optipng to get benefits of an even better optimization of .png file')
+  _saveResults(json_db, rootDir, sprite, cssString)
 
-
-  # save as webp
-  # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#webp
-  # method=6 provides a better size, but is slow
-  webp_result = spriteFilename + '.webp'
-  print('Save ' +  webp_result)
-  sprite.save(webp_result, method=6, quality=100, lossless=True)
-
-  # save css file, or print on the console
-  cssFilename = json_db.get('cssFilename')
-  if cssFilename is None:
-    print('\n=======================  copy/paste the sprite position in your favorite css file')
-    print(cssString)
-    print('=======================')
-  else:
-    cssFilename = _getFullFilename(cssFilename, rootDir)
-    with open(cssFilename, 'w') as file:
-      file.write(cssString)
-      file.close()
-    print('Save ' +  cssFilename)
 
 def create_sprites(spriteJsonFilename):
   try:
@@ -274,5 +239,3 @@ def create_sprites(spriteJsonFilename):
 
   rootDir = os.path.dirname(spriteJsonFilename)
   create_from_memory(json_db, rootDir)
-
-# pylint           --indent-string='  '           --disable C0103,C0303,C0301,C0116,C0114,C0325,R1705 src/spriteforhtml/create.py
