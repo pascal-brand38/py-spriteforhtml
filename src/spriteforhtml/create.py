@@ -202,10 +202,7 @@ def create_from_memory(json_db, rootDir='.'):
   cssAllClasses = ''
   for subimage in json_db['subimages']:
     i = subimage['pil']
-    pos_w = int(subimage['posHor'])
-    pos_h = int(subimage['posVer'])
-
-    sprite.paste(i, (pos_w, pos_h))
+    sprite.paste(i, (int(subimage['posHor']), int(subimage['posVer'])))
     pseudo = subimage.get('cssPseudo', '')
 
     cssString += subimage['cssSelector'] + pseudo + ' {'                                                \

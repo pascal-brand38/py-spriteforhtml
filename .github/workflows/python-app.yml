@@ -55,13 +55,12 @@ jobs:
       # C0116: Missing function or method docstring  --  TODO remove it from disable list
       # C0114: Missing module docstring  --  TODO remove it from disable list
       # C0325: Unnecessary parens after 'if' keyword
-      # R0914: Too many local variables (21/15)
       # R1705: Unnecessary "else" after "return"
       # W0718: Catching too general exception
       # W0719: Raising too general exception
       # W1514: Using open without explicitly specifying an encoding  --  TODO remove it from disable list
       run: |
-        pylint --indent-string='  ' --disable C0103,C0301,C0116,C0114,C0325,R0914,R1705,W0718,W0719,W1514 $(git ls-files '*.py')
+        pylint --indent-string='  ' --disable C0103,C0301,C0116,C0114,C0325,R1705,W0718,W0719,W1514 $(git ls-files '*.py')
     - name: Test with pytest
       run: |
         pytest tests/unit.py
