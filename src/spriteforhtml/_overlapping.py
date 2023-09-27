@@ -1,6 +1,15 @@
-# MIT License
-#
-# Copyright (c) 2023 Pascal Brand
+"""
+MIT License
+Copyright (c) 2023 Pascal Brand
+
+Check subimages placement are overlapping or not, using the API checkOverlapping(subimages),
+where subimages is an array of object having the properties
+- 'posHor': horizontal position of the top-left corner of the image
+  Can be None if not placed yet. In such case, this subimage is not considered
+- 'posVer': vertical position
+- 'pil': the opened image, by pil. Properties 'width' and 'height' are used
+- 'filename': the filename of the sub-image
+"""
 
 # check for subimage overlapping
 def _getCoords(i):

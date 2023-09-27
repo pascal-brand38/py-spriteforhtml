@@ -1,3 +1,10 @@
+"""
+MIT License
+Copyright (c) 2023 Pascal Brand
+
+Unit testing
+"""
+
 import filecmp
 import tempfile
 import platform

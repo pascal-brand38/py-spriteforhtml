@@ -1,15 +1,17 @@
-# MIT License
-# Copyright (c) 2023 Pascal Brand
-#
-# Sort subimages list
-# - the one that have posHor are placed before
-# - depending on the strategy,
-#   - 'auto':
-#       updated in 'hor' if the largest dimension of all subimages is its height
-#               in 'ver otherwise
-#   - 'hor': the taller subimages first, then the wider
-#   - 'ver': the wider subimages first, then the taller
-#   - 'square': the bigger (number of pixels) ones first
+"""
+MIT License
+Copyright (c) 2023 Pascal Brand
+
+sortSubimages(json_db): Sort subimages list json_db['subimages']
+- the one that have posHor are placed before
+- depending on the strategy,
+  - 'auto':
+      updated in 'hor' if the largest dimension of all subimages is its height
+              in 'ver otherwise
+  - 'hor': the taller subimages first, then the wider
+  - 'ver': the wider subimages first, then the taller
+  - 'square': the bigger (number of pixels) ones first
+"""
 
 import functools
 
@@ -53,19 +55,6 @@ def _compareSquare(i1, i2):
     return r
   return w2*h2 - w1*h1
 
-# Calling
-def sortSubimages(json_db):
-  _setStrategy(json_db)
-  cmp = None
-  if json_db['strategy'] == 'hor':
-    cmp = _compareHor
-  elif json_db['strategy'] == 'ver':
-    cmp = _compareVer
-  elif json_db['strategy'] == 'square':
-    cmp = _compareSquare
-  json_db['subimages'].sort(key=functools.cmp_to_key(cmp))
-
-
 def _setStrategy(json_db):
   if json_db.get('strategy') is None:
     json_db['strategy'] = 'auto'
@@ -80,3 +69,14 @@ def _setStrategy(json_db):
         json_db['strategy'] = 'hor'
       else:
         json_db['strategy'] = 'ver'
+
+def sortSubimages(json_db):
+  _setStrategy(json_db)
+  cmp = None
+  if json_db['strategy'] == 'hor':
+    cmp = _compareHor
+  elif json_db['strategy'] == 'ver':
+    cmp = _compareVer
+  elif json_db['strategy'] == 'square':
+    cmp = _compareSquare
+  json_db['subimages'].sort(key=functools.cmp_to_key(cmp))

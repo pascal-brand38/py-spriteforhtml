@@ -1,6 +1,13 @@
-# MIT License
-#
-# Copyright (c) 2023 Pascal Brand
+"""
+MIT License
+Copyright (c) 2023 Pascal Brand
+
+Main module to create sprites. Contain the following API:
+  - create_sprites(spriteJsonFilename)
+    create sprites from a json file
+  - create_from_memory(json_db, rootDir='.'):
+    create sprites from a json db in memory
+"""
 
 import os
 import json

@@ -53,13 +53,12 @@ jobs:
       # C0103: Variable name naming style
       # C0301: line too long
       # C0116: Missing function or method docstring  --  TODO remove it from disable list
-      # C0114: Missing module docstring  --  TODO remove it from disable list
       # C0325: Unnecessary parens after 'if' keyword
       # R1705: Unnecessary "else" after "return"
       # W0718: Catching too general exception
       # W0719: Raising too general exception
       run: |
-        pylint --indent-string='  ' --disable C0103,C0301,C0116,C0114,C0325,R1705,W0718,W0719 $(git ls-files '*.py')
+        pylint --indent-string='  ' --disable C0103,C0301,C0116,C0325,R1705,W0718,W0719 $(git ls-files '*.py')
     - name: Test with pytest
       run: |
         pytest tests/unit.py
