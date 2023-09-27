@@ -1,10 +1,9 @@
-# MIT License
-# Copyright (c) 2023 Pascal Brand
-
 '''
+MIT License
+Copyright (c) 2023 Pascal Brand
+
 To be called with
   python -m spriteforhtml ...
-
 
 if no arguments, same as
   python -m spriteforhtml <dirofmain>/data/sprite.json
@@ -16,7 +15,7 @@ import argparse
 from spriteforhtml import create
 
 
-def createParser():
+def _createParser():
   parser = argparse.ArgumentParser(
      prog='spriteforhtml',
      description='Creation of png and webp sprite to be used in html ',
@@ -50,7 +49,10 @@ def createParser():
   return parser
 
 def main():
-  parser = createParser()
+  """
+  Main function of python package spriteforhtml
+  """
+  parser = _createParser()
   args = parser.parse_args()
 
   print('parser = ', args)

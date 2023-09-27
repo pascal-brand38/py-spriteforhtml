@@ -184,6 +184,10 @@ def _saveResults(json_db, rootDir, sprite, cssString):
 
 
 def create_from_memory(json_db, rootDir='.'):
+  """
+  Create sprites from a json object
+  See full description at top of this file
+  """
   _checkJson(json_db)
   _openSubimages(json_db, rootDir)
 
@@ -234,6 +238,11 @@ def create_from_memory(json_db, rootDir='.'):
 
 
 def create_sprites(spriteJsonFilename):
+  """
+  Create sprites from a json file
+  See full description at top of this file
+  """
+
   try:
     with open(spriteJsonFilename, encoding='utf-8') as file:
       json_db = json.load(file)

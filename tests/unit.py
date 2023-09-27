@@ -10,7 +10,7 @@ import tempfile
 import platform
 from spriteforhtml import create
 
-def cmp_lines(path_1, path_2):
+def _cmp_lines(path_1, path_2):
   l1 = l2 = True
   with open(path_1, 'r', encoding='utf-8') as f1, open(path_2, 'r', encoding='utf-8') as f2:
     while l1 and l2:
@@ -21,6 +21,9 @@ def cmp_lines(path_1, path_2):
   return True
 
 def test_fromjson():
+  """
+  Test using a json file
+  """
   refdir = 'src/spriteforhtml/data/'
   if platform.system() == "Windows":
     resdir = tempfile.gettempdir() + '/'
@@ -38,7 +41,7 @@ def test_fromjson():
     # fname = resdir+file
     # with open(fname, 'r') as fin:
     #   print(fin.read())
-    assert cmp_lines(refdir+file, resdir+file), f"{file}"
+    assert _cmp_lines(refdir+file, resdir+file), f"{file}"
 
 
   # compare binary files

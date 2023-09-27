@@ -70,7 +70,12 @@ def _setStrategy(json_db):
       else:
         json_db['strategy'] = 'ver'
 
+
 def sortSubimages(json_db):
+  """
+  Sort subimage list in json_db
+  See full description at top of this file
+  """
   _setStrategy(json_db)
   cmp = None
   if json_db['strategy'] == 'hor':

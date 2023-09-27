@@ -2,7 +2,7 @@
 MIT License
 Copyright (c) 2023 Pascal Brand
 
-Check subimages placement are overlapping or not, using the API checkOverlapping(subimages),
+Check subimages placement is overlapping or not, using the API checkOverlapping(subimages),
 where subimages is an array of object having the properties
 - 'posHor': horizontal position of the top-left corner of the image
   Can be None if not placed yet. In such case, this subimage is not considered
@@ -37,6 +37,10 @@ def _checkUnitOverlapping(i1, i2):
   return True
 
 def checkOverlapping(subimages):
+  """
+  Check if subimages are overlapping or not
+  See full description at top of this file
+  """
   for i1 in subimages:
     for i2 in subimages:
       # do not check the same image
