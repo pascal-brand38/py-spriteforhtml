@@ -170,7 +170,7 @@ def _saveResults(json_db, rootDir, sprite, cssString):
     print('=======================')
   else:
     cssFilename = _getFullFilename(cssFilename, rootDir)
-    with open(cssFilename, 'w') as file:
+    with open(cssFilename, 'w', encoding='utf-8') as file:
       file.write(cssString)
       file.close()
     print('Save ' +  cssFilename)
