@@ -55,9 +55,8 @@ jobs:
       # C0325: Unnecessary parens after 'if' keyword
       # R1705: Unnecessary "else" after "return"
       # W0718: Catching too general exception
-      # W0719: Raising too general exception
       run: |
-        pylint --indent-string='  ' --disable C0103,C0301,C0325,R1705,W0718,W0719 $(git ls-files '*.py')
+        pylint --indent-string='  ' --disable C0103,C0301,C0325,R1705,W0718 $(git ls-files '*.py')
     - name: Test with pytest
       run: |
         pytest tests/unit.py

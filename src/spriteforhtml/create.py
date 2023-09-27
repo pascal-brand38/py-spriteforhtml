@@ -21,7 +21,7 @@ from ._sort import sortSubimages
 from ._overlapping import checkOverlapping
 
 def _error(e):
-  raise Exception(e)
+  raise RuntimeError(e)
 
 
 # utility function to get the full filename given a filename (absolute or relative) and the
