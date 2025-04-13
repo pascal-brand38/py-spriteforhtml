@@ -82,10 +82,8 @@ def _spriteSize(subimages):
     pos_h = int(subimage['posVer'])
     w = subimage['pil'].width
     h = subimage['pil'].height
-    if sprite_width < pos_w + w:
-      sprite_width = pos_w + w
-    if sprite_height < pos_h + h:
-      sprite_height = pos_h + h
+    sprite_width = max(sprite_width, pos_w + w)
+    sprite_height = max(sprite_height, pos_h + h)
 
   # if (sprite_width % 8 != 0):
   #   sprite_width = math.floor((sprite_width / 8) * 8) + 8
