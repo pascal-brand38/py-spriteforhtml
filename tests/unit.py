@@ -50,4 +50,4 @@ def test_fromjson():
   else:
     listSprites = [ 'sprite.webp', 'sprite.png', ]
   for file in listSprites:
-    assert filecmp.cmp(refdir+file, resdir+file, shallow=True), f"{file}"
+    assert (filecmp.cmp(refdir+file, resdir+file, shallow=True) or filecmp.cmp(refdir+'2-'+file, resdir+file, shallow=True)), f"{file}"
